@@ -3,18 +3,18 @@ import os
 
 from flask import Blueprint, current_app, render_template
 
-simple = Blueprint('simple', __name__, url_prefix='/simple',
+blueprint = Blueprint('simple', __name__, url_prefix='/simple',
                    template_folder='templates')
 
 
-@simple.route('', methods=['GET'])
+@blueprint.route('', methods=['GET'])
 def get_simple():
     """List all packages."""
     packages = os.listdir(current_app.config['BASEDIR'])
     return render_template('simple.html', packages=packages)
 
 
-@simple.route('/<package>', methods=['GET'])
+@blueprint.route('/<package>', methods=['GET'])
 def get_package(package):
     """List versions of a package."""
     package_path = os.path.join(current_app.config['BASEDIR'],

@@ -2,7 +2,7 @@
 import os
 from flask import Blueprint, current_app, request
 
-pypi = Blueprint('pypi', __name__, url_prefix='/pypi')
+blueprint = Blueprint('pypi', __name__, url_prefix='/pypi')
 
 
 def register_package(request):
@@ -26,7 +26,7 @@ def upload_package(request):
     return 'ok'
 
 
-@pypi.route('', methods=['POST'])
+@blueprint.route('', methods=['POST'])
 def post_pypi():
     """Find a package and return the contents of it."""
     actions = {
