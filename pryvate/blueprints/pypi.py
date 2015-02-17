@@ -2,11 +2,7 @@
 import os
 from flask import Blueprint, current_app, request
 
-pypi = Blueprint(
-    'pypi',
-    __name__,
-    url_prefix='/pypi'
-)
+pypi = Blueprint('pypi', __name__, url_prefix='/pypi')
 
 
 def register_package(request):
