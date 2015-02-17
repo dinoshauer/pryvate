@@ -18,13 +18,23 @@ def register_package(request):
 
 
 def upload_package(request):
-    pass
+    contents = request.files['content']
+    digest = request.form['md5_digest']
+    file_path = os.path.join(current_app.config['BASEDIR'],
+                             request.form['name'].lower(),
+                             contents.filename.lower())
+
+    contents.save(file_path)
+    with open('{}.md5'.format(file_path), 'w') as md5_digest:
+        md5_digest.write(digest)
+    return 'ok'
 
 
 @pypi.route('', methods=['POST'])
 def post_pypi():
     """Find a package and return the contents of it."""
-    if not request.files:
-        return register_package(request)
-    else:
-        return upload_package(request)
+    actions = {
+        'submit': register_package,
+        'file_upload': upload_package,
+    }
+    return actions[request.form[':action']](request)
