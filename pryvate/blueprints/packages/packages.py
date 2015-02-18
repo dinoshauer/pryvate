@@ -11,18 +11,20 @@ blueprint = Blueprint('packages', __name__, url_prefix='/packages')
 
 
 def register_package(name):
+    """Register a package."""
     package_path = os.path.join(current_app.config['BASEDIR'], name.lower())
     if not os.path.isdir(package_path):
         os.mkdir(package_path)
     return True
 
 
-def save_package(name, version, filecontents):
+def save_response(name, version, response):
+    """Save the contents of a package."""
     egg_path = os.path.join(current_app.config['BASEDIR'], name.lower(),
                             version.lower())
     if not os.path.isfile(egg_path):
         with open(egg_path, 'wb') as egg:
-            for block in filecontents.iter_content(1024):
+            for block in response.iter_content(1024):
                 if not block:
                     break
                 egg.write(block)
@@ -54,7 +56,7 @@ def packages(package_type, letter, name, version):
             return make_response(response.contents, response.status_code)
         if not register_package(name):
             return abort(500)
-        if not save_package(name, version, response):
+        if not save_response(name, version, response):
             return abort(500)
     return make_response(response.content, 200,
                          {'Content-Type': response.headers['Content-Type']})
