@@ -21,3 +21,4 @@ def packages(package_type, letter, name, version):
             mimetype = magic.from_file(filepath, mime=True)
             contents = egg.read()
             return make_response(contents, 200, {'Content-Type': mimetype})
+    return make_response('Package not found', 404)
