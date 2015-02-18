@@ -15,6 +15,7 @@ def get_simple():
 
 
 @blueprint.route('/<package>', methods=['GET'])
+@blueprint.route('/<package>/', methods=['GET'])
 def get_package(package):
     """List versions of a package."""
     package_path = os.path.join(current_app.config['BASEDIR'],
