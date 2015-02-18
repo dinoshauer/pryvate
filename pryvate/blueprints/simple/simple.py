@@ -1,10 +1,16 @@
 """Simple blueprint."""
 import os
 
-from flask import Blueprint, current_app, render_template
+from flask import Blueprint, current_app, make_response, render_template
 
 blueprint = Blueprint('simple', __name__, url_prefix='/simple',
                    template_folder='templates')
+
+
+@blueprint.route('', methods=['POST'])
+def search_simple():
+    """Handling pip search."""
+    return make_response('Not implemented', 501)
 
 
 @blueprint.route('', methods=['GET'])
