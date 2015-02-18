@@ -1,14 +1,37 @@
 """Package blueprint."""
+import hashlib
 import os
 
 import magic
-from flask import Blueprint, current_app, make_response, render_template
+import requests
+from flask import (abort, Blueprint, current_app, make_response,
+                   render_template, request)
 
 blueprint = Blueprint('packages', __name__, url_prefix='/packages')
 
-@blueprint.route('')
-def foo():
-    return 'ok'
+
+def register_package(name):
+    package_path = os.path.join(current_app.config['BASEDIR'], name.lower())
+    if not os.path.isdir(package_path):
+        os.mkdir(package_path)
+    return True
+
+
+def save_package(name, version, filecontents):
+    egg_path = os.path.join(current_app.config['BASEDIR'], name.lower(),
+                            version.lower())
+    if not os.path.isfile(egg_path):
+        with open(egg_path, 'wb') as egg:
+            for block in filecontents.iter_content(1024):
+                if not block:
+                    break
+                egg.write(block)
+        with open(egg_path, 'rb') as egg:
+            md5 = hashlib.md5(egg.read())
+            with open('{}.md5'.format(egg_path), 'w') as digest:
+                digest.write(md5.hexdigest())
+    return True
+
 
 @blueprint.route('/<package_type>/<letter>/<name>/<version>',
                  methods=['GET', 'HEAD'])
@@ -16,9 +39,22 @@ def packages(package_type, letter, name, version):
     """Get the contents of a package."""
     filepath = os.path.join(current_app.config['BASEDIR'], name.lower(),
                             version.lower())
+    remote = request.args.get('remote')
+
     if os.path.isfile(filepath):
         with open(filepath, 'rb') as egg:
             mimetype = magic.from_file(filepath, mime=True)
             contents = egg.read()
             return make_response(contents, 200, {'Content-Type': mimetype})
-    return make_response('Package not found', 404)
+    else:
+        base_url = current_app.config['PYPI']
+        url = base_url.format(request.path)
+        response = requests.get(url)
+        if not response.ok:
+            return make_response(response.contents, response.status_code)
+        if not register_package(name):
+            return abort(500)
+        if not save_package(name, version, response):
+            return abort(500)
+    return make_response(response.content, 200,
+                         {'Content-Type': response.headers['Content-Type']})
