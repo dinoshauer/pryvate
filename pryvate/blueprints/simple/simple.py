@@ -1,6 +1,7 @@
 """Simple blueprint."""
 import os
 
+import requests
 from flask import Blueprint, current_app, make_response, render_template
 
 blueprint = Blueprint('simple', __name__, url_prefix='/simple',
@@ -43,4 +44,10 @@ def get_package(package):
         return render_template('simple_package.html', packages=packages,
                                letter=package[:1].lower())
     else:
-        return make_response('404', 404)
+        base_url = current_app.config['PYPI']
+        url = base_url.format('/simple/{}/'.format(package.lower()))
+        response = requests.get(url)
+        if response.ok:
+            return response.content
+        return make_response(response.content, response.status_code)
+    return make_response('Not found', 404)
