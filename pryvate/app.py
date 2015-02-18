@@ -9,6 +9,7 @@ from blueprints.simple import simple
 app = Flask(__name__)
 app.config['BASEDIR'] = './eggs/'
 app.config['PYPI'] = 'https://pypi.python.org{}'
+app.config['PRIVATE_EGGS'] = {}
 
 if not os.path.isdir(app.config['BASEDIR']):
     os.mkdir(app.config['BASEDIR'])

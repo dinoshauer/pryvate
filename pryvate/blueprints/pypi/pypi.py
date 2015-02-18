@@ -33,4 +33,6 @@ def post_pypi():
         'submit': register_package,
         'file_upload': upload_package,
     }
+    # TODO: Update a file or datastore to survive crashes
+    current_app.config['PRIVATE_EGGS'].update([request.form['name'].lower()])
     return actions[request.form[':action']](request)

@@ -27,9 +27,8 @@ def get_package(package):
     """List versions of a package."""
     package_path = os.path.join(current_app.config['BASEDIR'],
                                 package.lower())
-    if os.path.isdir(package_path):
+    if package in current_app.config['PRIVATE_EGGS'] and os.path.isdir(package_path):
         files = os.listdir(package_path)
-
         packages = []
         for filename in files:
             if filename.endswith('md5'):
@@ -43,11 +42,7 @@ def get_package(package):
                     packages.append(item)
         return render_template('simple_package.html', packages=packages,
                                letter=package[:1].lower())
-    else:
-        base_url = current_app.config['PYPI']
-        url = base_url.format('/simple/{}/'.format(package.lower()))
-        response = requests.get(url)
-        if response.ok:
-            return response.content
-        return make_response(response.content, response.status_code)
-    return make_response('Not found', 404)
+    base_url = current_app.config['PYPI']
+    url = base_url.format('/simple/{}/'.format(package.lower()))
+    response = requests.get(url)
+    return response.content, response.status_code

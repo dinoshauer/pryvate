@@ -3,9 +3,8 @@ import hashlib
 import os
 
 import magic
-import requests
 from flask import (abort, Blueprint, current_app, make_response,
-                   render_template, request)
+                   render_template, redirect, request)
 
 blueprint = Blueprint('packages', __name__, url_prefix='/packages')
 
@@ -43,20 +42,14 @@ def packages(package_type, letter, name, version):
                             version.lower())
     remote = request.args.get('remote')
 
-    if os.path.isfile(filepath):
-        with open(filepath, 'rb') as egg:
-            mimetype = magic.from_file(filepath, mime=True)
-            contents = egg.read()
-            return make_response(contents, 200, {'Content-Type': mimetype})
+    if name in current_app.config['PRIVATE_EGGS']:
+        if os.path.isfile(filepath):
+            with open(filepath, 'rb') as egg:
+                mimetype = magic.from_file(filepath, mime=True)
+                contents = egg.read()
+                return make_response(contents, 200, {'Content-Type': mimetype})
+        return make_response('not found', 404)
     else:
         base_url = current_app.config['PYPI']
         url = base_url.format(request.path)
-        response = requests.get(url)
-        if not response.ok:
-            return make_response(response.contents, response.status_code)
-        if not register_package(name):
-            return abort(500)
-        if not save_response(name, version, response):
-            return abort(500)
-    return make_response(response.content, 200,
-                         {'Content-Type': response.headers['Content-Type']})
+        return redirect(url)
