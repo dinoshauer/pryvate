@@ -32,4 +32,4 @@ def get_package(package):
                 }
                 packages.append(item)
     return render_template('simple_package.html', packages=packages,
-                           letter=package[:1])
+                           letter=package[:1].lower())
