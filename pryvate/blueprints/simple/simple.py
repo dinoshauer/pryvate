@@ -26,17 +26,21 @@ def get_package(package):
     """List versions of a package."""
     package_path = os.path.join(current_app.config['BASEDIR'],
                                 package.lower())
-    files = os.listdir(package_path)
+    if os.path.isdir(package_path):
+        files = os.listdir(package_path)
 
-    packages = []
-    for filename in files:
-        if filename.endswith('md5'):
-            with open(os.path.join(package_path, filename), 'r') as md5_digest: 
-                item = {
-                    'name': package,
-                    'version': filename.replace('.md5', ''),
-                    'digest': md5_digest.read()
-                }
-                packages.append(item)
-    return render_template('simple_package.html', packages=packages,
-                           letter=package[:1].lower())
+        packages = []
+        for filename in files:
+            if filename.endswith('md5'):
+                digest_file = os.path.join(package_path, filename)
+                with open(digest_file, 'r') as md5_digest:
+                    item = {
+                        'name': package,
+                        'version': filename.replace('.md5', ''),
+                        'digest': md5_digest.read()
+                    }
+                    packages.append(item)
+        return render_template('simple_package.html', packages=packages,
+                               letter=package[:1].lower())
+    else:
+        return make_response('404', 404)
