@@ -11,11 +11,6 @@
     args:
     - --rcfile=.pylintrc
 
-- repo: git://github.com/FalconSocial/pre-commit-python-sorter
-  sha: 1.0.0
-  hooks:
-  - id: python-import-sorter
-
 - repo: git://github.com/FalconSocial/pre-commit-mirrors-pep257
   sha: v0.3.2
   hooks:
