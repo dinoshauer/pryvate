@@ -9,6 +9,11 @@ Private PyPi repository and proxy supporting:
 * [x] Configurable
 * [ ] Caching packages - *Won't happen right now.*
 
+# TODO:
+
+* [ ] Tests
+* [ ] Sphinx docs
+* [ ] Put on the cheeseshop
 
 # Usage:
 
