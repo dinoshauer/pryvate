@@ -6,11 +6,11 @@ from flask import Flask
 from pryvate.blueprints.packages import packages
 from pryvate.blueprints.pypi import pypi
 from pryvate.blueprints.simple import simple
+from pryvate.defaultconfig import DefaultConfig
 
 app = Flask(__name__)
-app.config['BASEDIR'] = './eggs/'
-app.config['PYPI'] = 'https://pypi.python.org{}'
-app.config['PRIVATE_EGGS'] = {}
+app.config.from_object(DefaultConfig)
+app.config.from_envvar('PRYVATE_CONFIG')
 
 if not os.path.isdir(app.config['BASEDIR']):
     os.mkdir(app.config['BASEDIR'])
