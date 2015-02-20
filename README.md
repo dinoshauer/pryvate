@@ -11,7 +11,7 @@ Private PyPi repository and proxy supporting:
 
 # TODO:
 
-* [ ] Tests
+* [x] Tests
 * [ ] Sphinx docs
 * [ ] Put on the cheeseshop
 
