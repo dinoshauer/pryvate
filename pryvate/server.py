@@ -10,7 +10,10 @@ from pryvate.defaultconfig import DefaultConfig
 
 app = Flask(__name__)
 app.config.from_object(DefaultConfig)
-app.config.from_envvar('PRYVATE_CONFIG')
+if os.environ.get('PRYVATE_CONFIG'):
+    app.config.from_envvar('PRYVATE_CONFIG')
+else:
+    app.logger.warning('env var PRYVATE_CONFIG not set, running with defaults')
 
 if not os.path.isdir(app.config['BASEDIR']):
     os.mkdir(app.config['BASEDIR'])
