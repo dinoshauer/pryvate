@@ -15,7 +15,7 @@ class PryvateTestCase(unittest.TestCase):
     def setUp(self):
         """Set up step for all tests."""
         self.egg_folder = tempfile.TemporaryDirectory()
-        pryvate.app.config['BASEDIR'] = self.egg_folder.name
+        pryvate.server.app.config['BASEDIR'] = self.egg_folder.name
         self.app = pryvate.server.app.test_client()
 
     def tearDown(self):
