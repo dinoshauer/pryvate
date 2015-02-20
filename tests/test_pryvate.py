@@ -36,10 +36,29 @@ class PryvateTestCase(unittest.TestCase):
         self.app = pryvate.server.app.test_client()
         self.simple = '/simple'
         self.pypi = '/pypi'
+        self.packages = '/packages'
 
     def tearDown(self):
         """Tear down stop for all tests."""
         self.egg_folder.cleanup()
+
+    def test_packages(self):
+        """Assert that pryvate will send you a package."""
+        expected = 'application/gzip'
+        url = '{}/sdist/m/meep/meep-1.0.0.tar.gz'
+        request = self.app.get(url.format(self.packages))
+        assert request.headers['Content-Type'] in expected
+        assert request.status_code == 200
+
+    def test_packages_cheeseshop(self):
+        """Assert that pryvate will proxy unknown packages to cheeseshop."""
+        expected = pryvate.server.app.config['PYPI'].format(
+            '/packages/sdist/F/Flask/Flask-0.10.tar.gz',
+        )
+        url = '{}/sdist/F/Flask/Flask-0.10.tar.gz'
+        request = self.app.get(url.format(self.packages))
+        assert request.headers['Location'] == expected
+        assert request.status_code == 301
 
     def test_pypi_register(self):
         """Assert that you can register a package with pryvate."""
