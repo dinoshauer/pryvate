@@ -81,6 +81,14 @@ class PryvateTestCase(unittest.TestCase):
         assert request.status_code == 200
         assert expected in [a.string for a in response.find_all('a')]
 
+    def test_simple_get_cheeseshop(self):
+        """Assert that pryvate will proxy an unknown egg to the cheeseshop."""
+        expected = 'Flask-0.10.tar.gz'
+        request = self.app.get('{}/flask/'.format(self.simple))
+        response = BeautifulSoup(request.data)
+        assert request.status_code == 200
+        assert expected in [a.string for a in response.find_all('a')]
+
     def test_simple_get_private_egg(self):
         """Assert that pryvate will return a privately registered egg."""
         expected = 'meep-1.0.0.tar.gz'
