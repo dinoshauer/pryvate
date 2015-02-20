@@ -40,13 +40,13 @@ class PryvateTestCase(unittest.TestCase):
         """Tear down stop for all tests."""
         self.egg_folder.cleanup()
 
-    def test_search(self):
+    def test_simple_search(self):
         """Assert that the search feature is not implemented."""
         request = self.app.post(self.simple)
         assert request.status_code == 501
         assert request.data == b'Not implemented'
 
-    def test_get_all(self):
+    def test_simple_get_all(self):
         """Assert that pryvate can return a list of packages."""
         expected = 'meep'
         request = self.app.get(self.simple)
@@ -54,7 +54,7 @@ class PryvateTestCase(unittest.TestCase):
         assert request.status_code == 200
         assert expected in [a.string for a in response.find_all('a')]
 
-    def test_get_private_egg(self):
+    def test_simple_get_private_egg(self):
         """Assert that pryvate will return a privately registered egg."""
         expected = 'meep-1.0.0.tar.gz'
         request = self.app.get('{}/meep/'.format(self.simple))
