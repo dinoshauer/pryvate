@@ -1,4 +1,5 @@
 """Pryvate tests."""
+# pylint: disable=too-many-public-methods
 
 import os
 import unittest
@@ -29,7 +30,14 @@ class PryvateTestCase(unittest.TestCase):
         self._copy_egg(self.egg_folder.name)
         pryvate.server.app.config['BASEDIR'] = self.egg_folder.name
         self.app = pryvate.server.app.test_client()
+        self.simple = '/simple'
 
     def tearDown(self):
         """Tear down stop for all tests."""
         self.egg_folder.cleanup()
+
+    def test_search(self):
+        """Assert that the search feature is not implemented."""
+        request = self.app.post(self.simple)
+        assert request.status_code == 501
+        assert request.data == b'Not implemented'
