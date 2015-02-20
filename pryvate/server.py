@@ -1,4 +1,16 @@
-"""Private PyPi repository and proxy."""
+"""Private PyPi repository and proxy.
+
+This is the main entrypoint for running the pryvate server.
+It can be started in couple of different ways:
+
+1. Importing it in a ``wsgi`` file, for a minimal setup all you need is:
+
+    from pryvate.server import app
+
+2. You can start it via the console script exposed from the installation:
+
+    $ pryvate-server
+"""
 import os
 
 from flask import Flask
@@ -24,7 +36,18 @@ app.register_blueprint(simple.blueprint)
 
 
 def run(host=None, debug=False):
-    """Start the server."""
+    """Start the server.
+
+    This function is only available for
+    the console script exposed by installing
+    the pryvate package.
+
+    Keyword Arguments:
+        host (``str``, optional): The interface the server will bind to
+            *Default:* ``None``
+        debug (``bool``, optional): Start the Flask server in debug mode
+            *Default:* ``False``
+    """
     app.run(host=host, debug=debug)
 
 
