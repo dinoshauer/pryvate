@@ -35,10 +35,37 @@ class PryvateTestCase(unittest.TestCase):
         pryvate.server.app.config['PRIVATE_EGGS'] = {'meep'}
         self.app = pryvate.server.app.test_client()
         self.simple = '/simple'
+        self.pypi = '/pypi'
 
     def tearDown(self):
         """Tear down stop for all tests."""
         self.egg_folder.cleanup()
+
+    def test_pypi_register(self):
+        """Assert that you can register a package with pryvate."""
+        expected = b'ok'
+        payload = {'name': 'foo', ':action': 'submit'}
+        request = self.app.post(self.pypi, data=payload)
+        assert expected == request.data
+        assert request.status_code == 200
+        assert 'foo' in os.listdir(self.egg_folder.name)
+        assert 'foo' in pryvate.server.app.config['PRIVATE_EGGS']
+
+    def test_pypi_upload(self):
+        """Assert that you can upload a package with pryvate."""
+        payload = {'name': 'foo', ':action': 'submit'}
+        request = self.app.post(self.pypi, data=payload)
+
+        filename = 'foo-1.0.0.tar.gz'
+        filepath = os.path.join('tests/res', filename)
+        expected = b'ok'
+        payload = {'name': 'foo', ':action': 'file_upload',
+                   'md5_digest': '80ce9a2b000eee531db2479fd16a5f38',
+                   'content': (open(filepath, 'rb'), filename)}
+        request = self.app.post(self.pypi, data=payload,
+                                content_type='multipart/form-data')
+        assert request.data == expected
+        assert request.status_code == 200
 
     def test_simple_search(self):
         """Assert that the search feature is not implemented."""
