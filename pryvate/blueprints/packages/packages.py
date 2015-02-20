@@ -7,12 +7,29 @@ from flask import Blueprint, current_app, make_response, redirect, request
 blueprint = Blueprint('packages', __name__, url_prefix='/packages')
 
 
-@blueprint.route('/<_>/<__>/<name>/<version>',
-                 methods=['GET', 'HEAD'])
-def packages(_, __, name, version):
-    """Get the contents of a package."""
+@blueprint.route('/<_>/<__>/<name>/<filename>', methods=['GET'])
+def packages(_, __, name, filename):
+    """Get the contents of a package.
+
+    The two first arguments are unused and specified as such by ``_``.
+
+    Arguments:
+        _ (``str``): *Unused* this is the package_type part of the /packages
+            url, e.g.: ``sdist``/``source``
+        __ (``str``): *Unused* this is the initial letter part of the /packages
+            url, e.g.: ``F`` for ``Flask``
+        name (``str``): This is the name of the package as defined in setup.py
+        filename (``str``): This is the filename being requested, e.g.:
+            ``Flask-0.10.0.tar.gz``
+
+    Returns:
+        Status codes:
+        * ``200``
+        * ``404``
+        * ``301``
+    """
     filepath = os.path.join(current_app.config['BASEDIR'], name.lower(),
-                            version.lower())
+                            filename.lower())
 
     if name in current_app.config['PRIVATE_EGGS']:
         if os.path.isfile(filepath):

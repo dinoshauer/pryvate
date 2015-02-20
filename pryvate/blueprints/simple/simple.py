@@ -5,18 +5,29 @@ import requests
 from flask import Blueprint, current_app, make_response, render_template
 
 blueprint = Blueprint('simple', __name__, url_prefix='/simple',
-                   template_folder='templates')
+                      template_folder='templates')
 
 
 @blueprint.route('', methods=['POST'])
 def search_simple():
-    """Handling pip search."""
+    """Handling pip search.
+
+    I don't fancy parsing XML payloads to be honest,
+    if you cannot live without being able to search through
+    pryvate you're welcome to create a pull request at
+    https://github.com/dinoshauer/pryvate
+    """
     return make_response('Not implemented', 501)
 
 
 @blueprint.route('', methods=['GET'])
 def get_simple():
-    """List all packages."""
+    """List all packages.
+
+    Returns:
+        A HTML page with a list of all the packages registered
+        in pryvate
+    """
     packages = os.listdir(current_app.config['BASEDIR'])
     return render_template('simple.html', packages=packages)
 
@@ -24,7 +35,15 @@ def get_simple():
 @blueprint.route('/<package>', methods=['GET'])
 @blueprint.route('/<package>/', methods=['GET'])
 def get_package(package):
-    """List versions of a package."""
+    """List versions of a package.
+
+    Returns:
+        A HTML page with a list of all versions of a specific
+        package registered in pryvate
+
+        In case a given package is not registered in pryvate,
+        the request is proxied to another CheeseShop
+    """
     package_path = os.path.join(current_app.config['BASEDIR'],
                                 package.lower())
     if package in current_app.config['PRIVATE_EGGS'] and os.path.isdir(package_path):
