@@ -52,4 +52,4 @@ def packages(package_type, letter, name, version):
     else:
         base_url = current_app.config['PYPI']
         url = base_url.format(request.path)
-        return redirect(url)
+        return redirect(url, 301)
