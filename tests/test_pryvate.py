@@ -41,3 +41,9 @@ class PryvateTestCase(unittest.TestCase):
         request = self.app.post(self.simple)
         assert request.status_code == 501
         assert request.data == b'Not implemented'
+
+    def test_get_all(self):
+        """Assert that pryvate can return a list of packages."""
+        request = self.app.get(self.simple)
+        assert request.status_code == 200
+        assert b'/simple/meep' in request.data
