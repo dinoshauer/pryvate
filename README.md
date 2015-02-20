@@ -13,7 +13,11 @@ Private PyPi repository and proxy supporting:
 
 * [x] Tests
 * [ ] Sphinx docs
+    * [x] Write better docstrings
+* [ ] Find a better datastore than a variable
 * [ ] Put on the cheeseshop
+* [ ] TravisCI
+* [ ] ReadTheDocs
 
 # Usage:
 
