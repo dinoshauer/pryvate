@@ -16,6 +16,9 @@ def search_simple():
     if you cannot live without being able to search through
     pryvate you're welcome to create a pull request at
     https://github.com/dinoshauer/pryvate
+
+    Returns:
+        ``501`` - Not implemented
     """
     return make_response('Not implemented', 501)
 

@@ -1,16 +1,4 @@
-"""Private PyPi repository and proxy.
-
-This is the main entrypoint for running the pryvate server.
-It can be started in couple of different ways:
-
-1. Importing it in a ``wsgi`` file, for a minimal setup all you need is:
-
-    from pryvate.server import app
-
-2. You can start it via the console script exposed from the installation:
-
-    $ pryvate-server
-"""
+"""Pryvate server."""
 import os
 
 from flask import Flask
