@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/Dinoshauer/pryvate.svg?branch=master)](https://travis-ci.org/Dinoshauer/pryvate)
+[![Coverage Status](https://coveralls.io/repos/Dinoshauer/pryvate/badge.png)](https://coveralls.io/r/Dinoshauer/pryvate)
+
 Pryvate
 =======
 
@@ -16,7 +19,7 @@ Private PyPi repository and proxy supporting:
     * [x] Write better docstrings
 * [ ] Find a better datastore than a variable
 * [ ] Put on the cheeseshop
-* [ ] TravisCI
+* [x] TravisCI
 * [ ] ReadTheDocs
 
 # Usage:
