@@ -44,10 +44,10 @@ class PryvateTestCase(unittest.TestCase):
 
     def test_packages(self):
         """Assert that pryvate will send you a package."""
-        expected = 'application/gzip'
+        expected = 'gzip'
         url = '{}/sdist/m/meep/meep-1.0.0.tar.gz'
         request = self.app.get(url.format(self.packages))
-        assert request.headers['Content-Type'] in expected
+        assert expected in request.headers['Content-Type']
         assert request.status_code == 200
 
     def test_packages_cheeseshop(self):
