@@ -24,6 +24,7 @@ setup(
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: MIT License',
         'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
         'Topic :: Internet :: Proxy Servers',
         'Topic :: Software Development :: Libraries :: Python Modules',

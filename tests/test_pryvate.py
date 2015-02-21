@@ -29,9 +29,9 @@ class PryvateTestCase(unittest.TestCase):
 
     def setUp(self):
         """Set up step for all tests."""
-        self.egg_folder = tempfile.TemporaryDirectory()
-        self._copy_egg(self.egg_folder.name)
-        pryvate.server.app.config['BASEDIR'] = self.egg_folder.name
+        self.egg_folder = tempfile.mkdtemp()
+        self._copy_egg(self.egg_folder)
+        pryvate.server.app.config['BASEDIR'] = self.egg_folder
         pryvate.server.app.config['PRIVATE_EGGS'] = {'meep'}
         self.app = pryvate.server.app.test_client()
         self.simple = '/simple'
@@ -40,7 +40,7 @@ class PryvateTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Tear down stop for all tests."""
-        self.egg_folder.cleanup()
+        shutil.rmtree(self.egg_folder)
 
     def test_packages(self):
         """Assert that pryvate will send you a package."""
@@ -67,7 +67,7 @@ class PryvateTestCase(unittest.TestCase):
         request = self.app.post(self.pypi, data=payload)
         assert expected == request.data
         assert request.status_code == 200
-        assert 'foo' in os.listdir(self.egg_folder.name)
+        assert 'foo' in os.listdir(self.egg_folder)
         assert 'foo' in pryvate.server.app.config['PRIVATE_EGGS']
 
     def test_pypi_upload(self):
