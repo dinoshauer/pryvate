@@ -13,9 +13,12 @@ class DefaultConfig(object):
 
     * ``BASEDIR`` - Where to store packages
     * ``PYPI`` - The url to the cheeseshop where public packages are stored
-    * ``PRIVATE_EGGS`` - The names of private packages that pryvate intercepts
+    * ``DB_PATH`` - Path or URI to a SQLite database (can be :memory:)
+    * ``DB_URI`` - Set to ``True`` if using a URI for ``DB_PATH``
     """
 
     BASEDIR = './eggs/'
     PYPI = 'https://pypi.python.org{}'
     PRIVATE_EGGS = {}
+    DB_PATH = '.pryvate.db'
+    DB_URI = False

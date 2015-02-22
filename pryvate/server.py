@@ -1,12 +1,13 @@
 """Pryvate server."""
 import os
 
-from flask import Flask
+from flask import Flask, g
 
 from pryvate.blueprints.packages import packages
 from pryvate.blueprints.pypi import pypi
 from pryvate.blueprints.simple import simple
 from pryvate.defaultconfig import DefaultConfig
+from pryvate.db import PryvateSQLite
 
 app = Flask(__name__)
 app.config.from_object(DefaultConfig)
@@ -18,9 +19,26 @@ else:
 if not os.path.isdir(app.config['BASEDIR']):
     os.mkdir(app.config['BASEDIR'])
 
+if app.testing:
+    app.config['DB_PATH'] = ':memory:'
+
 app.register_blueprint(packages.blueprint)
 app.register_blueprint(pypi.blueprint)
 app.register_blueprint(simple.blueprint)
+
+
+@app.before_request
+def before_request():
+    """Start a database connection."""
+    g.database = PryvateSQLite(app.config['DB_PATH'], app.config['DB_URI'])
+
+
+@app.teardown_request
+def teardown_request(_):
+    """Close the database connection if it exists."""
+    database = getattr(g, 'database', None)
+    if database is not None:
+        database.connection.close()
 
 
 def run(host=None, debug=False):
