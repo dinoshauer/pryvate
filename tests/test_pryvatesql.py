@@ -1,6 +1,5 @@
 """PryvateSQL tests."""
 # pylint: disable=too-many-public-methods
-
 import unittest
 
 from pryvate.db import PryvateSQLite
@@ -13,6 +12,10 @@ class PryvateSQLiteTestCase(unittest.TestCase):
     def setUp(self):
         """Set up step for all tests."""
         self.pryvate_db = PryvateSQLite(':memory:')
+
+    def tearDown(self):
+        """Tear down step, clean up after yourself."""
+        self.pryvate_db.connection.close()
 
     def test_get_eggs(self):
         """Test getting all eggs."""
