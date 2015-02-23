@@ -30,7 +30,7 @@ app.register_blueprint(simple.blueprint)
 @app.before_request
 def before_request():
     """Start a database connection."""
-    g.database = PryvateSQLite(app.config['DB_PATH'], app.config['DB_URI'])
+    g.database = PryvateSQLite(app.config['DB_PATH'])
 
 
 @app.teardown_request

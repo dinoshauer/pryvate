@@ -10,21 +10,17 @@ class PryvateSQLite(object):
     it does not already exist.
 
     Keyword Arguments:
-        name (``str``, optional): Path to the database, will be
-            interpreted as a URI if ``uri`` is ``True``
+        name (``str``, optional): Path to the database
             *Default:* ``pryvate.db``
-        uri (``bool``, optional): Pass ``True`` if you're using
-            a URI instead of a path
-            *Default:* ``False``
     """
 
     CREATE = 'CREATE TABLE IF NOT EXISTS eggs (name TEXT);'
     GET_ALL = 'SELECT name FROM eggs;'
     NEW_EGG = 'INSERT INTO eggs (name) VALUES (?);'
 
-    def __init__(self, name='pryvate.db', uri=False):
+    def __init__(self, name='pryvate.db'):
         """Initialize a new database connection."""
-        self.connection = sqlite3.connect(name, uri=uri)
+        self.connection = sqlite3.connect(name)
         self.connection.execute(self.CREATE)
         self.connection.commit()
         self.connection.row_factory = sqlite3.Row
