@@ -1,6 +1,7 @@
 -r requirements.txt
 beautifulsoup4==4.3.2
 pre-commit==0.3.6
+# pypandoc==0.9.1 Leaving this commented out as it is not necessary for builds
 pytest==2.6.4
 pytest-cov==1.8.1
 pytest-xdist==1.11

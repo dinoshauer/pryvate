@@ -2,11 +2,22 @@
 
 from setuptools import find_packages, setup
 
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except (IOError, ImportError):
+    long_description = ''
+
 setup(
     name='pryvate',
     description='Private PyPi proxy and repository',
+    long_description=long_description,
     packages=find_packages(),
     version=open('VERSION', 'r').read().strip(),
+    author='Kasper Jacobsen',
+    author_email='k@mackwerk.dk',
+    url='https://github.com/Dinoshauer/pryvate',
+    download_url='https://pypi.python.org/pypi/pryvate',
     install_requires=[
         'Flask>=0.10,<1',
         'python-magic>=0.4,<1',
