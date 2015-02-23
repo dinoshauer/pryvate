@@ -68,6 +68,18 @@ class PryvateTestCase(unittest.TestCase):
         assert request.headers['Location'] == expected
         assert request.status_code == 301
 
+    def test_packages_not_uploaded(self):
+        """Assert that pryvate will return 404.
+
+        If a package is in the db but not on the filesystem,
+        this can happen when a package is registered but not
+        yet uploaded.
+        """
+        self.database.new_egg('bar')
+        url = '{}/sdist/m/bar/bar-1.0.0.tar.gz'
+        request = self.app.get(url.format(self.packages))
+        assert request.status_code == 404
+
     def test_pypi_register(self):
         """Assert that you can register a package with pryvate."""
         expected = b'ok'
