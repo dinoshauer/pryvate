@@ -7,6 +7,8 @@
 Pryvate
 =======
 
+`pip install pryvate`
+
 Private PyPi repository and proxy supporting:
 
 * `python setup.py sdist upload...`
