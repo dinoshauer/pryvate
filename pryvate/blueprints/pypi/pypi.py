@@ -1,6 +1,6 @@
 """PyPi blueprint."""
 import os
-from flask import abort, Blueprint, current_app, g, request
+from flask import Blueprint, current_app, g, request
 
 blueprint = Blueprint('pypi', __name__, url_prefix='/pypi')
 
@@ -59,4 +59,3 @@ def post_pypi():
     }
     if g.database.new_egg(request.form['name'].lower()):
         return actions[request.form[':action']](request)
-    return abort(500)

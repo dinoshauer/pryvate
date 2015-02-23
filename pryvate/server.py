@@ -19,8 +19,6 @@ else:
 if not os.path.isdir(app.config['BASEDIR']):
     os.mkdir(app.config['BASEDIR'])
 
-if app.testing:
-    app.config['DB_PATH'] = ':memory:'
 
 app.register_blueprint(packages.blueprint)
 app.register_blueprint(pypi.blueprint)
