@@ -10,6 +10,7 @@ import tempfile
 from bs4 import BeautifulSoup
 
 import pryvate
+from pryvate.db import PryvateSQLite
 
 
 class PryvateTestCase(unittest.TestCase):
@@ -30,9 +31,13 @@ class PryvateTestCase(unittest.TestCase):
     def setUp(self):
         """Set up step for all tests."""
         self.egg_folder = tempfile.mkdtemp()
+        _, self.db_path = tempfile.mkstemp()
         self._copy_egg(self.egg_folder)
+        pryvate.server.app.testing = True
         pryvate.server.app.config['BASEDIR'] = self.egg_folder
-        pryvate.server.app.config['PRIVATE_EGGS'] = {'meep'}
+        pryvate.server.app.config['DB_PATH'] = self.db_path
+        self.database = PryvateSQLite(self.db_path)
+        self.database.new_egg('meep')
         self.app = pryvate.server.app.test_client()
         self.simple = '/simple'
         self.pypi = '/pypi'
@@ -40,7 +45,10 @@ class PryvateTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Tear down stop for all tests."""
+        self.database.connection.close()
+        os.unlink(self.db_path)
         shutil.rmtree(self.egg_folder)
+
 
     def test_packages(self):
         """Assert that pryvate will send you a package."""
@@ -60,6 +68,18 @@ class PryvateTestCase(unittest.TestCase):
         assert request.headers['Location'] == expected
         assert request.status_code == 301
 
+    def test_packages_not_uploaded(self):
+        """Assert that pryvate will return 404.
+
+        If a package is in the db but not on the filesystem,
+        this can happen when a package is registered but not
+        yet uploaded.
+        """
+        self.database.new_egg('bar')
+        url = '{}/sdist/m/bar/bar-1.0.0.tar.gz'
+        request = self.app.get(url.format(self.packages))
+        assert request.status_code == 404
+
     def test_pypi_register(self):
         """Assert that you can register a package with pryvate."""
         expected = b'ok'
@@ -68,7 +88,7 @@ class PryvateTestCase(unittest.TestCase):
         assert expected == request.data
         assert request.status_code == 200
         assert 'foo' in os.listdir(self.egg_folder)
-        assert 'foo' in pryvate.server.app.config['PRIVATE_EGGS']
+        assert 'foo' in self.database.get_eggs()
 
     def test_pypi_upload(self):
         """Assert that you can upload a package with pryvate."""

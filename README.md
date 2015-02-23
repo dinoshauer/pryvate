@@ -20,7 +20,7 @@ Private PyPi repository and proxy supporting:
 * [x] Tests
 * [x] Sphinx docs
     * [x] Write better docstrings
-* [ ] Find a better datastore than a variable
+* [x] Find a better datastore than a variable - *SQLite won for dev-speed*
 * [x] Put on the cheeseshop
 * [x] TravisCI
 * [x] ReadTheDocs

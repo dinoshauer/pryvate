@@ -2,7 +2,7 @@
 import os
 
 import magic
-from flask import Blueprint, current_app, make_response, redirect, request
+from flask import Blueprint, current_app, g, make_response, redirect, request
 
 blueprint = Blueprint('packages', __name__, url_prefix='/packages')
 
@@ -31,7 +31,7 @@ def packages(_, __, name, filename):
     filepath = os.path.join(current_app.config['BASEDIR'], name.lower(),
                             filename.lower())
 
-    if name in current_app.config['PRIVATE_EGGS']:
+    if name in g.database.get_eggs():
         if os.path.isfile(filepath):
             with open(filepath, 'rb') as egg:
                 mimetype = magic.from_file(filepath, mime=True)
