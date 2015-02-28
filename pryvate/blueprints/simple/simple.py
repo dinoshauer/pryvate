@@ -50,7 +50,7 @@ def get_package(package):
     package_path = os.path.join(current_app.config['BASEDIR'],
                                 package.lower())
 
-    if package in g.database.get_eggs() and os.path.isdir(package_path):
+    if package in g.database.get_eggs_pip() and os.path.isdir(package_path):
         files = os.listdir(package_path)
         packages = []
         for filename in files:

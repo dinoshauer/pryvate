@@ -31,7 +31,7 @@ def packages(_, __, name, filename):
     filepath = os.path.join(current_app.config['BASEDIR'], name.lower(),
                             filename.lower())
 
-    if name in g.database.get_eggs():
+    if name in g.database.get_eggs_pip():
         if os.path.isfile(filepath):
             with open(filepath, 'rb') as egg:
                 mimetype = magic.from_file(filepath, mime=True)

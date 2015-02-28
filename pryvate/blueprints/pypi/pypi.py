@@ -1,6 +1,6 @@
 """PyPi blueprint."""
 import os
-from flask import Blueprint, current_app, g, request
+from flask import abort, Blueprint, current_app, g, request
 
 blueprint = Blueprint('pypi', __name__, url_prefix='/pypi')
 
@@ -46,6 +46,25 @@ def upload_package(localproxy):
     return 'ok'
 
 
+def get_payload(data):
+    """Parse and process a dict for inserting a new egg.
+
+    Necessary because ``request.form`` is an immutable dict.
+
+    Arguments:
+        data (``dict`` like object): The object to get values from
+
+    Returns:
+        ``dict``
+    """
+    return {'platform': data['platform'], 'author_email': data['author_email'],
+            'name': data['name'].lower(), 'description': data['description'],
+            'download_url': data['download_url'], 'summary': data['summary'],
+            'version': data['version'], 'home_page': data['home_page'],
+            'license': data['license'], 'author': data['author'],
+            'metadata_version': data['metadata_version']}
+
+
 @blueprint.route('', methods=['POST'])
 def post_pypi():
     """Find a package and return the contents of it.
@@ -57,5 +76,13 @@ def post_pypi():
         'submit': register_package,
         'file_upload': upload_package,
     }
-    if g.database.new_egg(request.form['name'].lower()):
+    egg_exists = request.form['name'].lower() in g.database.get_eggs_pip()
+
+    if egg_exists:
         return actions[request.form[':action']](request)
+    else:
+        if request.form[':action'] == 'file_upload':
+            data = get_payload(request.form)
+            if g.database.new_egg(data):
+                return register_package(request)
+        return abort(405)
