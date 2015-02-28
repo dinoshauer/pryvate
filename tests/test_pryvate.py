@@ -37,7 +37,12 @@ class PryvateTestCase(unittest.TestCase):
         pryvate.server.app.config['BASEDIR'] = self.egg_folder
         pryvate.server.app.config['DB_PATH'] = self.db_path
         self.database = PryvateSQLite(self.db_path)
-        self.database.new_egg('meep')
+        data = {'description': 'UNKNOWN', 'author': 'UNKNOWN',
+                'home_page': 'UNKNOWN', 'version': '1.0.0',
+                'author_email': 'UNKNOWN', 'license': 'UNKNOWN',
+                'download_url': 'UNKNOWN', 'platform': 'UNKNOWN',
+                'summary': 'Meep.', 'name': 'meep', 'metadata_version': '1.0'}
+        self.database.new_egg(data)
         self.app = pryvate.server.app.test_client()
         self.simple = '/simple'
         self.pypi = '/pypi'
@@ -59,7 +64,7 @@ class PryvateTestCase(unittest.TestCase):
         assert request.status_code == 200
 
     def test_packages_cheeseshop(self):
-        """Assert that pryvate will proxy unknown packages to cheeseshop."""
+        """Assert that pryvate will proxy unknown packages to a cheeseshop."""
         expected = pryvate.server.app.config['PYPI'].format(
             '/packages/sdist/F/Flask/Flask-0.10.tar.gz',
         )
@@ -75,7 +80,12 @@ class PryvateTestCase(unittest.TestCase):
         this can happen when a package is registered but not
         yet uploaded.
         """
-        self.database.new_egg('bar')
+        data = {'description': 'UNKNOWN', 'author': 'UNKNOWN',
+                'home_page': 'UNKNOWN', 'version': '1.0.0',
+                'author_email': 'UNKNOWN', 'license': 'UNKNOWN',
+                'download_url': 'UNKNOWN', 'platform': 'UNKNOWN',
+                'summary': 'Bar.', 'name': 'bar', 'metadata_version': '1.0'}
+        self.database.new_egg(data)
         url = '{}/sdist/m/bar/bar-1.0.0.tar.gz'
         request = self.app.get(url.format(self.packages))
         assert request.status_code == 404
@@ -83,16 +93,26 @@ class PryvateTestCase(unittest.TestCase):
     def test_pypi_register(self):
         """Assert that you can register a package with pryvate."""
         expected = b'ok'
-        payload = {'name': 'foo', ':action': 'submit'}
+        payload = {':action': 'submit', 'description': 'UNKNOWN',
+                   'author': 'UNKNOWN', 'home_page': 'UNKNOWN',
+                   'version': '1.0.0', 'author_email': 'UNKNOWN',
+                   'license': 'UNKNOWN', 'download_url': 'UNKNOWN',
+                   'platform': 'UNKNOWN', 'summary': 'Foo.', 'name': 'foo',
+                   'metadata_version': '1.0'}
         request = self.app.post(self.pypi, data=payload)
         assert expected == request.data
         assert request.status_code == 200
         assert 'foo' in os.listdir(self.egg_folder)
-        assert 'foo' in self.database.get_eggs()
+        assert 'foo' in self.database.get_eggs_pip()
 
     def test_pypi_upload(self):
         """Assert that you can upload a package with pryvate."""
-        payload = {'name': 'foo', ':action': 'submit'}
+        payload = {':action': 'submit', 'description': 'UNKNOWN',
+                   'author': 'UNKNOWN', 'home_page': 'UNKNOWN',
+                   'version': '1.0.0', 'author_email': 'UNKNOWN',
+                   'license': 'UNKNOWN', 'download_url': 'UNKNOWN',
+                   'platform': 'UNKNOWN', 'summary': 'Foo.', 'name': 'foo',
+                   'metadata_version': '1.0'}
         request = self.app.post(self.pypi, data=payload)
 
         filename = 'foo-1.0.0.tar.gz'
