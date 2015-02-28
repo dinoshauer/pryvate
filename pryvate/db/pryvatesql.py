@@ -14,9 +14,21 @@ class PryvateSQLite(object):
             *Default:* ``pryvate.db``
     """
 
-    CREATE = 'CREATE TABLE IF NOT EXISTS eggs (name TEXT);'
-    GET_ALL = 'SELECT name FROM eggs;'
-    NEW_EGG = 'INSERT INTO eggs (name) VALUES (?);'
+    CREATE = '''CREATE TABLE IF NOT EXISTS eggs
+    (
+        name TEXT, description TEXT, license TEXT,
+        author TEXT, author_email TEXT, download_url TEXT,
+        summary TEXT, platform TEXT, metadata_version TEXT,
+        version TEXT, home_page TEXT
+    );'''
+    GET_ALL_PIP = 'SELECT name FROM eggs;'
+    NEW_EGG = '''INSERT INTO eggs (
+        name, description, license, author, author_email, download_url,
+        summary, platform, metadata_version, version, home_page
+    ) VALUES (
+        :name, :description, :license, :author, :author_email, :download_url,
+        :summary, :platform, :metadata_version, :version, :home_page
+    );'''
 
     def __init__(self, name='pryvate.db'):
         """Initialize a new database connection."""
@@ -25,24 +37,24 @@ class PryvateSQLite(object):
         self.connection.commit()
         self.connection.row_factory = sqlite3.Row
 
-    def get_eggs(self):
+    def get_eggs_pip(self):
         """Get available private eggs.
 
         Returns:
             ``list`` of ``str``
         """
-        rows = self.connection.execute(self.GET_ALL)
+        rows = self.connection.execute(self.GET_ALL_PIP)
         return [item['name'] for item in rows]
 
-    def new_egg(self, name):
+    def new_egg(self, data):
         """Add new egg to list.
 
         Arguments:
-            name (``str``): The name of the egg to add
+            data (``dict``): The data of the egg to add
 
         Returns:
             ``bool``
         """
-        row_count = self.connection.execute(self.NEW_EGG, (name, )).rowcount
+        row_count = self.connection.execute(self.NEW_EGG, data).rowcount
         self.connection.commit()
         return bool(row_count)
