@@ -1,6 +1,6 @@
 """PyPi blueprint."""
 import os
-from flask import abort, Blueprint, current_app, g, request
+from flask import Blueprint, current_app, g, request
 
 blueprint = Blueprint('pypi', __name__, url_prefix='/pypi')
 
@@ -78,11 +78,9 @@ def post_pypi():
     }
     egg_exists = request.form['name'].lower() in g.database.get_eggs_pip()
 
-    if egg_exists:
-        return actions[request.form[':action']](request)
-    else:
-        if request.form[':action'] == 'file_upload':
-            data = get_payload(request.form)
-            if g.database.new_egg(data):
-                return register_package(request)
-        return abort(405)
+    if not egg_exists:
+        data = get_payload(request.form)
+        if not g.database.new_egg(data):
+            current_app.logger.error('An error occurred when trying '
+                                     'to save egg in db')
+    return actions[request.form[':action']](request)

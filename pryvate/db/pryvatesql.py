@@ -21,25 +21,33 @@ class PryvateSQLite(object):
         summary TEXT, platform TEXT, metadata_version TEXT,
         home_page TEXT
     );'''
-    CREATE_VERSION_TABLE = '''CREATE TABLE IF NOT EXISTS
+    CREATE_VERSION_TABLE = '''CREATE TABLE IF NOT EXISTS versions
     (
         name TEXT, version TEXT,
         upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );'''
     GET_ALL_PIP = 'SELECT name FROM eggs;'
-    GET_ALL_API = 'SELECT * FROM eggs LIMIT :limit OFFSET :offset;'
+    GET_ALL_API = '''SELECT eggs.*, versions.version FROM eggs
+    INNER JOIN versions ON eggs.name = versions.name
+    LIMIT :limit OFFSET :offset;'''
     NEW_EGG = '''INSERT INTO eggs (
         name, description, license, author, author_email, download_url,
-        summary, platform, metadata_version, version, home_page
+        summary, platform, metadata_version, home_page
     ) VALUES (
         :name, :description, :license, :author, :author_email, :download_url,
-        :summary, :platform, :metadata_version, :version, :home_page
+        :summary, :platform, :metadata_version, :home_page
+    );'''
+    NEW_VERSION = '''INSERT INTO versions (
+        name, version
+    ) VALUES (
+        :name, :version
     );'''
 
     def __init__(self, name='pryvate.db'):
         """Initialize a new database connection."""
         self.connection = sqlite3.connect(name)
         self.connection.execute(self.CREATE_EGG_TABLE)
+        self.connection.execute(self.CREATE_VERSION_TABLE)
         self.connection.commit()
         self.connection.row_factory = sqlite3.Row
 
@@ -71,6 +79,7 @@ class PryvateSQLite(object):
         Returns:
             ``bool``
         """
-        row_count = self.connection.execute(self.NEW_EGG, data).rowcount
+        egg_insert = self.connection.execute(self.NEW_EGG, data)
+        version_insert = self.connection.execute(self.NEW_VERSION, data)
         self.connection.commit()
-        return bool(row_count)
+        return bool(egg_insert.rowcount) and bool(version_insert.rowcount)
