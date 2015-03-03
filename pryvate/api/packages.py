@@ -65,6 +65,25 @@ class Package(restful.Resource):
 
     """Represents a single package."""
 
+    VERSION_FIELDS = {
+        'upload_date': fields.String,
+        'version': fields.String,
+    }
+    RESOURCE_FIELDS = {
+        'author': fields.String,
+        'author_email': fields.String,
+        'description': fields.String,
+        'download_url': fields.String,
+        'home_page': fields.String,
+        'license': fields.String,
+        'metadata_version': fields.String,
+        'name': fields.String,
+        'platform': fields.String,
+        'summary': fields.String,
+        'versions': fields.List(fields.Nested(VERSION_FIELDS)),
+    }
+
+    @marshal_with(RESOURCE_FIELDS)
     def get(self, name):
         """Get a single package hosted by pryvate."""
         egg = g.database.get_egg_api(name)
