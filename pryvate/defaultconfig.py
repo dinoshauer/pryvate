@@ -20,3 +20,4 @@ class DefaultConfig(object):
     PYPI = 'https://pypi.python.org{}'
     PRIVATE_EGGS = {}
     DB_PATH = '.pryvate.db'
+    SEARCH_RATING_THRESHOLD = 50

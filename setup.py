@@ -20,6 +20,9 @@ setup(
     download_url='https://pypi.python.org/pypi/pryvate',
     install_requires=[
         'Flask>=0.10,<1',
+        'Flask-RESTful>=0.3,<1',
+        'fuzzywuzzy>=0.5,<1',
+        'python-Levenshtein>=0.12,<1',
         'python-magic>=0.4,<1',
         'requests>=2.5,<3',
     ],

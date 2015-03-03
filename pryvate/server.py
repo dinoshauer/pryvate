@@ -2,7 +2,9 @@
 import os
 
 from flask import Flask, g
+from flask.ext import restful
 
+from pryvate import api
 from pryvate.blueprints.packages import packages
 from pryvate.blueprints.pypi import pypi
 from pryvate.blueprints.simple import simple
@@ -19,10 +21,12 @@ else:
 if not os.path.isdir(app.config['BASEDIR']):
     os.mkdir(app.config['BASEDIR'])
 
-
 app.register_blueprint(packages.blueprint)
 app.register_blueprint(pypi.blueprint)
 app.register_blueprint(simple.blueprint)
+
+restful = restful.Api(app)
+restful.add_resource(api.PackageList, '/api/packages')
 
 
 @app.before_request
