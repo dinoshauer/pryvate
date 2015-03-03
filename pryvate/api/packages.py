@@ -42,6 +42,7 @@ class PackageList(restful.Resource):
         'version': fields.String,
         'upload_date': fields.String,
         'probability': Percentage,
+        'uri': fields.Url('package'),
     }
 
     @marshal_with(RESOURCE_FIELDS)
@@ -58,3 +59,11 @@ class PackageList(restful.Resource):
                     result.append(row)
             return sorted(result, reverse=True, key=lambda k: k['probability'])
         return rows
+
+
+class Package(restful.Resource):
+
+    """Represents a single package."""
+
+    def get(self):
+        """Pass."""

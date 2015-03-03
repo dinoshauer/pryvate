@@ -27,6 +27,8 @@ app.register_blueprint(simple.blueprint)
 
 restful = restful.Api(app)
 restful.add_resource(api.PackageList, '/api/packages')
+restful.add_resource(api.PackageList, '/api/package/<name>',
+                     endpoint='package')
 
 
 @app.before_request
