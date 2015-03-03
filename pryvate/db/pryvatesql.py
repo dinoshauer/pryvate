@@ -22,6 +22,7 @@ class PryvateSQLite(object):
         version TEXT, home_page TEXT
     );'''
     GET_ALL_PIP = 'SELECT name FROM eggs;'
+    GET_ALL_API = 'SELECT * FROM eggs LIMIT :limit OFFSET :offset;'
     NEW_EGG = '''INSERT INTO eggs (
         name, description, license, author, author_email, download_url,
         summary, platform, metadata_version, version, home_page
@@ -38,13 +39,23 @@ class PryvateSQLite(object):
         self.connection.row_factory = sqlite3.Row
 
     def get_eggs_pip(self):
-        """Get available private eggs.
+        """Get available private eggs (PIP).
 
         Returns:
             ``list`` of ``str``
         """
         rows = self.connection.execute(self.GET_ALL_PIP)
         return [item['name'] for item in rows]
+
+    def get_eggs_api(self, limit, offset):
+        """Get available private eggs (API).
+
+        Returns:
+            ``list`` of ``dict``
+        """
+        rows = self.connection.execute(self.GET_ALL_API,
+                                       {'limit': limit, 'offset': offset})
+        return [dict(row) for row in rows]
 
     def new_egg(self, data):
         """Add new egg to list.
