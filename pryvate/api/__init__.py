@@ -1,2 +1,2 @@
 """Pryvates restful API."""
-from .packages import PackageList
+from .packages import PackageList, Package

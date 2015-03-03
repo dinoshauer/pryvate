@@ -33,6 +33,9 @@ class PryvateSQLite(object):
     INNER JOIN versions ON eggs.name = versions.name
     /*Get only the latest version here*/
     LIMIT :limit OFFSET :offset;'''
+    GET_SINGLE_API = '''SELECT * FROM eggs WHERE eggs.name = :name;'''
+    GET_VERSIONS_API = '''SELECT version, upload_date FROM versions
+    WHERE versions.name = :name;'''
     NEW_EGG = '''INSERT INTO eggs (
         name, description, license, author, author_email, download_url,
         summary, platform, metadata_version, home_page
@@ -72,6 +75,22 @@ class PryvateSQLite(object):
         rows = self.connection.execute(self.GET_ALL_API,
                                        {'limit': limit, 'offset': offset})
         return [dict(row) for row in rows]
+
+    def get_egg_api(self, name):
+        """Get a single egg (API).
+
+        Returns:
+            ``dict``
+        """
+        egg_row = self.connection.execute(self.GET_SINGLE_API, {'name': name})
+        egg = egg_row.fetchone()
+        if egg:
+            versions = self.connection.execute(self.GET_VERSIONS_API,
+                                               {'name': name})
+            versions = [dict(version) for version in versions]
+            egg = dict(egg)
+            egg['versions'] = versions
+            return egg
 
     def new_egg(self, data):
         """Add new egg to list.

@@ -65,5 +65,7 @@ class Package(restful.Resource):
 
     """Represents a single package."""
 
-    def get(self):
-        """Pass."""
+    def get(self, name):
+        """Get a single package hosted by pryvate."""
+        egg = g.database.get_egg_api(name)
+        return egg
