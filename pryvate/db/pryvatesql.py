@@ -14,12 +14,17 @@ class PryvateSQLite(object):
             *Default:* ``pryvate.db``
     """
 
-    CREATE = '''CREATE TABLE IF NOT EXISTS eggs
+    CREATE_EGG_TABLE = '''CREATE TABLE IF NOT EXISTS eggs
     (
         name TEXT, description TEXT, license TEXT,
         author TEXT, author_email TEXT, download_url TEXT,
         summary TEXT, platform TEXT, metadata_version TEXT,
-        version TEXT, home_page TEXT
+        home_page TEXT
+    );'''
+    CREATE_VERSION_TABLE = '''CREATE TABLE IF NOT EXISTS
+    (
+        name TEXT, version TEXT,
+        upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );'''
     GET_ALL_PIP = 'SELECT name FROM eggs;'
     GET_ALL_API = 'SELECT * FROM eggs LIMIT :limit OFFSET :offset;'
@@ -34,7 +39,7 @@ class PryvateSQLite(object):
     def __init__(self, name='pryvate.db'):
         """Initialize a new database connection."""
         self.connection = sqlite3.connect(name)
-        self.connection.execute(self.CREATE)
+        self.connection.execute(self.CREATE_EGG_TABLE)
         self.connection.commit()
         self.connection.row_factory = sqlite3.Row
 
