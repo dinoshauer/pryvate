@@ -43,21 +43,18 @@ def teardown_request(_):
         database.connection.close()
 
 
-def run(host=None, debug=False):
+def run():
     """Start the server.
 
     This function is only available for
     the console script exposed by installing
     the pryvate package.
 
-    Keyword Arguments:
-        host (``str``, optional): The interface the server will bind to
-            *Default:* ``None``
-        debug (``bool``, optional): Start the Flask server in debug mode
-            *Default:* ``False``
+    Note:
+        This should only be used for debugging.
     """
-    app.run(host=host, debug=debug)
+    app.run(host='0.0.0.0', debug=True)
 
 
 if __name__ == '__main__':
-    run(host='0.0.0.0', debug=True)
+    run()
