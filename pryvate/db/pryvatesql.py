@@ -27,7 +27,8 @@ class PryvateSQLite(object):
         upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );'''
     GET_ALL_PIP = 'SELECT name FROM eggs;'
-    GET_ALL_API = '''SELECT eggs.*, versions.version, versions.upload_date
+    GET_ALL_API = '''SELECT eggs.name, eggs.description,
+    versions.version, versions.upload_date
     FROM eggs
     INNER JOIN versions ON eggs.name = versions.name
     /*Get only the latest version here*/
