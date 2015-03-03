@@ -4,8 +4,8 @@ pre-commit==0.3.6
 # pypandoc==0.9.1 Leaving this commented out as it is not necessary for builds
 pytest==2.6.4
 pytest-cov==1.8.1
-pytest-xdist==1.11
+# pytest-xdist==1.11 Same for these
 Sphinx==1.2.3
-sphinx-autobuild==0.3.0
+# sphinx-autobuild==0.3.0 Same for these
 sphinx-rtd-theme==0.1.6
 sphinxcontrib-napoleon==0.2.8
