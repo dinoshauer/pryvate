@@ -1,7 +1,7 @@
 """Handle /api/packages for searching etc."""
 # pylint: disable=no-init
 # pylint: disable=no-self-use
-from flask import current_app, g
+from flask import abort, current_app, g, redirect, url_for
 from flask.ext import restful
 from flask.ext.restful import fields, marshal_with, reqparse
 from fuzzywuzzy import fuzz
@@ -87,4 +87,26 @@ class Package(restful.Resource):
     def get(self, name):
         """Get a single package hosted by pryvate."""
         egg = g.database.get_egg_api(name)
-        return egg
+        if egg:
+            return egg
+        abort(404)
+
+
+class DownloadPackage(restful.Resource):
+
+    """Redirect a request to the download url."""
+
+    def get(self, name, version):
+        """Get the download url of a package.
+
+        Arguments:
+            name (``str``): Name of the package
+            version (``str``): The version of the package
+
+        Returns:
+            ``HTTP 302``
+        """
+        filename = '{}-{}.tar.gz'.format(name, version)
+        download_url = url_for('packages.packages', _='_', __='__',
+                               name=name, filename=filename)
+        return redirect(download_url)

@@ -29,6 +29,9 @@ restful = restful.Api(app)
 restful.add_resource(api.PackageList, '/api/packages')
 restful.add_resource(api.Package, '/api/package/<name>',
                      endpoint='package')
+restful.add_resource(api.DownloadPackage,
+                     '/api/package/<name>/download/<version>',
+                     endpoint='download')
 
 
 @app.before_request
