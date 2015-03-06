@@ -23,7 +23,7 @@ class PryvateSQLite(object):
     );'''
     CREATE_VERSION_TABLE = '''CREATE TABLE IF NOT EXISTS versions
     (
-        name TEXT, version TEXT,
+        name TEXT, version TEXT, uploader TEXT,
         upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );'''
     GET_ALL_PIP = 'SELECT name FROM eggs;'
