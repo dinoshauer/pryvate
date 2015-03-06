@@ -68,6 +68,7 @@ class Package(restful.Resource):
     VERSION_FIELDS = {
         'upload_date': fields.String,
         'version': fields.String,
+        'uri': fields.Url('download'),
     }
     RESOURCE_FIELDS = {
         'author': fields.String,

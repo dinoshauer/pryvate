@@ -34,8 +34,7 @@ class PryvateSQLite(object):
     /*Get only the latest version here*/
     LIMIT :limit OFFSET :offset;'''
     GET_SINGLE_API = '''SELECT * FROM eggs WHERE eggs.name = :name;'''
-    GET_VERSIONS_API = '''SELECT version, upload_date FROM versions
-    WHERE versions.name = :name;'''
+    GET_VERSIONS_API = '''SELECT * FROM versions WHERE name = :name;'''
     NEW_EGG = '''INSERT INTO eggs (
         name, description, license, author, author_email, download_url,
         summary, platform, metadata_version, home_page
