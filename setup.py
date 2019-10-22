@@ -19,7 +19,7 @@ setup(
     url='https://github.com/Dinoshauer/pryvate',
     download_url='https://pypi.python.org/pypi/pryvate',
     install_requires=[
-        'Flask>=0.10,<1',
+        'Flask>=0.10,<2',
         'python-magic>=0.4,<1',
         'requests>=2.5,<3',
     ],
